@@ -1,0 +1,137 @@
+clear all;
+close all;
+clc;
+
+xhex_b = [0 1 2 2 1 0];
+yhex   = [2 3 2 1 0 1];
+
+xhex_g = xhex_b + 2;
+xhex_y = xhex_b + 4;
+
+yhex_y  = yhex + 2;
+xhex_y2 = xhex_b + 1;
+xhex_b2 = xhex_y2 + 2;
+xhex_g2 = xhex_y2 + 4;
+
+for i_j_l = 0:4
+    for j = 0:7
+        
+        hold on;
+        
+        patch(xhex_b + i_j_l*6, yhex + j*4, 'blue')
+        patch(xhex_g + i_j_l*6, yhex + j*4, 'green')
+        patch(xhex_y + i_j_l*6, yhex + j*4, 'yellow')
+        
+        patch(xhex_y2 + i_j_l*6, yhex_y + j*4, 'yellow')
+        patch(xhex_b2 + i_j_l*6, yhex_y + j*4, 'blue')
+        patch(xhex_g2 + i_j_l*6, yhex_y + j*4, 'green')
+        
+    end
+end
+
+axis equal;
+
+N = 10;
+
+x_t(1) = 14;
+y_t(1) = 15.5;
+
+x_c = x_t(1);
+y_c = y_t(1);
+
+x_cell_activated(1) = x_c;
+y_cell_activated(1) = y_c;
+
+jl = 1;
+
+for n = 1:N
+    
+    centercell      = [x_c, y_c];
+    linearcell1     = [x_c+2, y_c];
+    linearcell2     = [x_c-2, y_c];
+    diagonal_cell1  = [x_c-1, y_c+2];
+    diagonal_cell2  = [x_c-1, y_c-2];
+    diagonal_cell3  = [x_c+1, y_c+2];
+    diagonal_cell4  = [x_c+1, y_c-2];
+    
+    if ((x_t(jl) > 1) && (x_t(jl) < 29) && ...
+        (y_t(jl) > 1) && (y_t(jl) < 29))
+    
+        currentPosition = [x_t(jl), y_t(jl)];
+        
+        Dist(1) = norm(currentPosition - centercell);
+        Dist(2) = norm(currentPosition - linearcell1);
+        Dist(3) = norm(currentPosition - linearcell2);
+        Dist(4) = norm(currentPosition - diagonal_cell1);
+        Dist(5) = norm(currentPosition - diagonal_cell2);
+        Dist(6) = norm(currentPosition - diagonal_cell3);
+        Dist(7) = norm(currentPosition - diagonal_cell4);
+        
+        [MinDist, Ind] = min(Dist);
+        
+        switch (Ind)
+            case 2
+                x_c = x_c + 2;
+            case 3
+                x_c = x_c - 2;
+            case 4
+                x_c = x_c - 1; 
+                y_c = y_c + 2;
+            case 5
+                x_c = x_c - 1; 
+                y_c = y_c - 2;
+            case 6
+                x_c = x_c + 1; 
+                y_c = y_c + 2;
+            case 7
+                x_c = x_c + 1; 
+                y_c = y_c - 2;
+        end
+        
+        A = 0.75 + 0.75*sign(randn);
+        B = 0.75 + 0.75*sign(randn);
+        
+        x_t(jl+1) = x_t(jl) + A;
+        
+        A = 0.5 * sign(randn);
+        y_t(jl+1) = y_t(jl) + B;
+        
+        jl = jl + 1;
+        
+        x_cell_activated(jl) = x_c;
+        y_cell_activated(jl) = y_c;
+        
+    end
+end
+
+for j_loop = 1:jl
+    
+    hold on
+    drawnow
+    pause(0.6);
+    
+    scatter(x_t(j_loop), y_t(j_loop), ...
+            'LineWidth', 2, 'Color', 'r');
+    
+    x_cor = [x_cell_activated(j_loop)-1,...
+             x_cell_activated(j_loop),...
+             x_cell_activated(j_loop)+1,...
+             x_cell_activated(j_loop)+1,...
+             x_cell_activated(j_loop),...
+             x_cell_activated(j_loop)-1];
+    
+    y_cor = [y_cell_activated(j_loop)+0.5,...
+             y_cell_activated(j_loop)+1.5,...
+             y_cell_activated(j_loop)+0.5,...
+             y_cell_activated(j_loop)-0.5,...
+             y_cell_activated(j_loop)-1.5,...
+             y_cell_activated(j_loop)-0.5];
+    
+    p = patch(x_cor, y_cor, 'red');
+    alpha(0.7);
+    
+    pause(1.5)
+    
+    delete(p)
+    
+end
