@@ -1,0 +1,36 @@
+clear all; 
+   close all; 
+   clc; 
+   %%First Row 
+   xhex_b=[0 1 2 2 1 0]; % x-coordinates of the vertices 
+   yhex=[2 3 2 1 0 1]; % y-coordinates of the vertices 
+   xhex_g=xhex_b + 2; 
+   xhex_y=xhex_b+4; 
+   %%second row 
+   yhex_y=yhex+2; 
+   xhex_y2=xhex_b+1; 
+   xhex_b2=xhex_y2+2; 
+   xhex_g2=xhex_y2+4; 
+   for i_j_l=0:4 
+       %i_j_l=i_j-1; 
+       for j=0:7 
+           %j=jl-1; 
+           hold on; 
+   patch(xhex_b+i_j_l*6,yhex+j*4,'blue') 
+   patch(xhex_g+i_j_l*6,yhex+j*4,'green') 
+   patch(xhex_y+i_j_l*6, yhex+j*4,"yellow") 
+   patch(xhex_y2+i_j_l*6, yhex_y+j*4,'yellow') 
+   patch(xhex_b2+i_j_l*6,yhex_y+j*4,'blue') 
+   patch(xhex_g2+i_j_l*6, yhex_y+j*4,'green') 
+       end 
+   end 
+   axis equal; 
+   axis([0 31 0 39]) 
+       xCenter=12; 
+      yCenter=11.5; 
+      theta=0:0.01*pi:2*pi; 
+      radius=4; 
+      x = radius*cos(theta) + xCenter; 
+       y=radius*sin(theta)+yCenter; 
+       plot(x,y,'r','LineWidth',4); 
+       patch([12 13 13 12 11 11],[13 12 11 10 11 12],'red')
